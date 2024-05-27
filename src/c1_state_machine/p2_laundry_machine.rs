@@ -40,7 +40,23 @@ impl StateMachine for ClothesMachine {
     type Transition = ClothesAction;
 
     fn next_state(starting_state: &ClothesState, t: &ClothesAction) -> ClothesState {
-        todo!("Exercise 3")
+        match (starting_state, t) {
+            (ClothesState::Clean(l), _) if *l < 2 => ClothesState::Tattered,
+            (ClothesState::Dirty(l), _) if *l < 2 => ClothesState::Tattered,
+            (ClothesState::Wet(l), _) if *l < 2 => ClothesState::Tattered,
+            (ClothesState::Clean(l), ClothesAction::Wear) => ClothesState::Dirty(l - 1),
+            (ClothesState::Clean(l), ClothesAction::Wash) => ClothesState::Wet(l - 1),
+            (ClothesState::Clean(l), ClothesAction::Dry) => ClothesState::Clean(l - 1),
+            (ClothesState::Dirty(l), ClothesAction::Wear) => ClothesState::Dirty(l - 1),
+            (ClothesState::Dirty(l), ClothesAction::Wash) => ClothesState::Wet(l - 1),
+            (ClothesState::Dirty(l), ClothesAction::Dry) => ClothesState::Dirty(l - 1),
+            (ClothesState::Wet(l), ClothesAction::Wear) => ClothesState::Dirty(l - 1),
+            (ClothesState::Wet(l), ClothesAction::Wash) => ClothesState::Wet(l - 1),
+            (ClothesState::Wet(l), ClothesAction::Dry) => ClothesState::Clean(l - 1),
+            (ClothesState::Tattered, ClothesAction::Wear) => ClothesState::Tattered,
+            (ClothesState::Tattered, ClothesAction::Wash) => ClothesState::Tattered,
+            (ClothesState::Tattered, ClothesAction::Dry) => ClothesState::Tattered,
+        }
     }
 }
 
